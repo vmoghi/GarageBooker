@@ -41,8 +41,5 @@ namespace GarageBooker
             var timeFormat = TimeSpan.ParseExact(time, @"hh\.mm", CultureInfo.InvariantCulture);
             return timeFormat;
         }
-
     }
-
-   
 }
