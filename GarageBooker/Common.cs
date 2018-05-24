@@ -8,7 +8,6 @@ namespace GarageBooker
 {
     class Common
     {
-
         internal static List<BookingModel> ListAppointmentBookedPerDay(string pathFile, int maxNextDays)
         {
             var listAppointments = new List<BookingModel>();
