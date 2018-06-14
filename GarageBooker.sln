@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.30723.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarageBooker", "GarageBooker\GarageBooker.csproj", "{845EC998-9FC8-4A0D-BA29-5AEF640989B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestGarage", "UnitTestGarage\UnitTestGarage.csproj", "{8177C26A-6D20-4A11-8F43-0D2478FA0228}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +15,10 @@ Global
 		{845EC998-9FC8-4A0D-BA29-5AEF640989B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{845EC998-9FC8-4A0D-BA29-5AEF640989B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{845EC998-9FC8-4A0D-BA29-5AEF640989B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8177C26A-6D20-4A11-8F43-0D2478FA0228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8177C26A-6D20-4A11-8F43-0D2478FA0228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8177C26A-6D20-4A11-8F43-0D2478FA0228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8177C26A-6D20-4A11-8F43-0D2478FA0228}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

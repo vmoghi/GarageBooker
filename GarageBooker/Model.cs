@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GarageBooker
 {
-    class BookingModel
+    public class BookingModel
     {
         public string Name{get;set;}
         public DateTime Date{get;set;}

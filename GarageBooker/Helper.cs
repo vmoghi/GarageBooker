@@ -8,14 +8,61 @@ using System.IO;
 using System.Globalization;
 namespace GarageBooker
 {
-    class Helper
+    public class Helper
     {
         internal static string RemoveSpecialCharacters(string str)
         {
             return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
 
-        internal static void CheckFileExists(string filePath)
+        public static List<string> GetRowsFromFile(string pathFile, int maxNextDays)
+        {
+            var listRows = new List<string>();
+            CheckFileExists(pathFile);
+
+            var info = new FileInfo(pathFile);
+            if (info.CreationTime <= DateTime.Now.AddDays(maxNextDays))
+            {
+                using (var fs = new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            var nextRow = sr.ReadLine().Trim();
+                            if (nextRow == "")
+                            {
+                                continue;
+                            }
+                            listRows.Add(nextRow);
+                        }
+                    }
+                }
+            }
+            return listRows;
+        }
+
+
+        internal static TimeSpan ParseTime(string time)
+        {
+            if (time.Length == 4)
+            {
+                time = "0" + time;
+            }
+            var timeFormat = TimeSpan.ParseExact(time, @"hh\.mm", CultureInfo.InvariantCulture);
+            return timeFormat;
+        }
+        internal static void WriteToFile(string filePath, string newAppoinment)
+        {
+            using (StreamWriter tw = File.AppendText(filePath))
+            {
+                tw.WriteLine(newAppoinment);
+                tw.WriteLine("");
+                tw.Flush();
+            }
+        }
+
+        private static void CheckFileExists(string filePath)
         {
             var info = new FileInfo(filePath);
             var dir = info.DirectoryName;
@@ -30,16 +77,6 @@ namespace GarageBooker
                 var writerObj = new StreamWriter(newFile);
                 newFile.Close();
             }
-        }
-
-        internal static TimeSpan ParseTime(string time)
-        {
-            if (time.Length == 4)
-            {
-                time = "0" + time;
-            }
-            var timeFormat = TimeSpan.ParseExact(time, @"hh\.mm", CultureInfo.InvariantCulture);
-            return timeFormat;
         }
     }
 }
