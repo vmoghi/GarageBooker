@@ -8,6 +8,22 @@ using System.IO;
 using System.Globalization;
 namespace GarageBooker
 {
+    public interface IHelper
+    {
+        void WriteToFile(string filePath, string newAppoinment);
+        List<string> GetRowsFromFile(string filePath, int maxNextDays);
+    }
+    public class InstanceHelper : IHelper
+    {
+        public void WriteToFile(string filePath, string newAppoinment)
+        {
+            Helper.WriteToFile(filePath, newAppoinment);
+        }
+        public List<string> GetRowsFromFile(string filePath, int maxNextDays)
+        {
+            return Helper.GetRowsFromFile(filePath, maxNextDays);
+        }
+    }
     public class Helper
     {
         internal static string RemoveSpecialCharacters(string str)
@@ -15,12 +31,12 @@ namespace GarageBooker
             return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
 
-        public static List<string> GetRowsFromFile(string pathFile, int maxNextDays)
+        public static List<string> GetRowsFromFile(string filePath, int maxNextDays)
         {
             var listRows = new List<string>();
-            CheckFileExists(pathFile);
+            CheckFileExists(filePath);
 
-            var info = new FileInfo(pathFile);
+            var info = new FileInfo(filePath);
             if (info.CreationTime <= DateTime.Now.AddDays(maxNextDays))
             {
                 using (var fs = new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))

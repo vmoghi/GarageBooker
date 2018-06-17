@@ -11,8 +11,10 @@ namespace GarageBooker
         static void Main(string[] args)
         {
             string userInput = "";
+            IHelper helper = new InstanceHelper();
+            ICommon common = new Common(helper);
             var buildGarage = new BookingPlain();
-            IGarage garage = buildGarage.BuildBooking();
+            IGarage garage = buildGarage.BuildBooking(common, helper);
 
             Console.WriteLine("Type 'new' to store a new appoinment, 'view' to show available time or 'exit' to stop");
 

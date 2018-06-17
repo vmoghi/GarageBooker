@@ -5,13 +5,25 @@ using System.Text;
 using System.IO;
 namespace GarageBooker
 {
-    public class Common
+    public interface ICommon
     {
-        public static List<BookingModel> ListAppointmentBookedPerDay(string pathFile, int maxNextDays)
+        BookingModel GetModelFromString(string row);
+        List<BookingModel> ListAppointmentBookedPerDay(string pathFile, int maxNextDays);
+        string ShowFreeTimeNextTenDays(Dictionary<DateTime, List<BookingModel>> listBookedAppointments, string startBusiness, string closeBusiness);
+    }
+    
+    public class Common : ICommon
+    {
+        private IHelper _helper = null;
+        public Common(IHelper helper)
+        {
+            _helper = helper;
+        }
+        public List<BookingModel> ListAppointmentBookedPerDay(string pathFile, int maxNextDays)
         {
             var listAppointments = new List<BookingModel>();
 
-            var listRowsFromFile=Helper.GetRowsFromFile(pathFile, maxNextDays);
+            var listRowsFromFile = _helper.GetRowsFromFile(pathFile, maxNextDays);
             foreach (var row in listRowsFromFile)
             {
                 var model = GetModelFromString(row);
@@ -24,7 +36,7 @@ namespace GarageBooker
            
             return listAppointments;
         }
-        public static string ShowFreeTimeNextTenDays(Dictionary<DateTime, List<BookingModel>> listBookedAppointments, string startBusiness, string closeBusiness)
+        public string ShowFreeTimeNextTenDays(Dictionary<DateTime, List<BookingModel>> listBookedAppointments, string startBusiness, string closeBusiness)
         {
             var errorMessage = "There is an error in this file. Please review it and fix the issue";
             var showAvailableTime = new StringBuilder();
@@ -71,7 +83,7 @@ namespace GarageBooker
             return showAvailableTime.ToString();
         }
 
-        public static BookingModel GetModelFromString(string row)
+        public BookingModel GetModelFromString(string row)
         {
             if (string.IsNullOrEmpty(row))
             {

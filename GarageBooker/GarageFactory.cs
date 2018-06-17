@@ -9,14 +9,14 @@ namespace GarageBooker
 {
     abstract class GarageFactory
     {
-        public abstract IGarage BuildBooking();
+        public abstract IGarage BuildBooking(ICommon common, IHelper helper);
     }
 
     class BookingPlain : GarageFactory
     {
-        public override IGarage BuildBooking()
+        public override IGarage BuildBooking(ICommon common, IHelper helper )
         {
-            return new PlainTextSource();
+            return new PlainTextSource(common, helper);
         }
     }
 
@@ -31,11 +31,17 @@ namespace GarageBooker
         private const string closeBusiness = "17.30";
         private int maxNextDays = 10;
         private const string pathFile = "../../Files";
-
+        private ICommon _common = null;
+        private IHelper _helper = null;
+        public PlainTextSource(ICommon common,IHelper helper)
+        {
+            _common = common;
+            _helper = helper;
+        }
         public string StoreNewAppointment(string newAppoinmentData)
         {
             var statusBooking = "The appointment has be booked";
-            var newAppointment = Common.GetModelFromString(newAppoinmentData);
+            var newAppointment = _common.GetModelFromString(newAppoinmentData);
             if (newAppointment==null)
             {
                 statusBooking = "The data insered are incorrect. Please try again follow the correct format.";
@@ -55,7 +61,7 @@ namespace GarageBooker
             {
                 return bookedMessage;
             }
-            Helper.WriteToFile(filePath, newAppoinmentData);
+            _helper.WriteToFile(filePath, newAppoinmentData);
 
             return statusBooking;
         }
@@ -64,23 +70,23 @@ namespace GarageBooker
         {
             var showAvailableTime = "";
             
-                var listBookedAppointments = new Dictionary<DateTime, List<BookingModel>>();
+            var listBookedAppointments = new Dictionary<DateTime, List<BookingModel>>();
 
-                for (int i = 0; i < maxNextDays; i++)
+            for (int i = 0; i < maxNextDays; i++)
+            {
+                var bookingDate = DateTime.Now.AddDays(i);
+                var path = Path.Combine(pathFile, bookingDate.ToString("dd-MM-yyyy") + ".txt");
+                try
                 {
-                    var bookingDate = DateTime.Now.AddDays(i);
-                    var path = Path.Combine(pathFile, bookingDate.ToString("dd-MM-yyyy") + ".txt");
-                    try
-                    {
-                        var listDayAppointments = Common.ListAppointmentBookedPerDay(path, maxNextDays);
-                        listBookedAppointments.Add(bookingDate, listDayAppointments);
-                    }
-                    catch (Exception)
-                    {
-                        showAvailableTime += "There is a fatal error in the file " + path+"/n";
-                    }
+                    var listDayAppointments = _common.ListAppointmentBookedPerDay(path, maxNextDays);
+                    listBookedAppointments.Add(bookingDate, listDayAppointments);
                 }
-                showAvailableTime += Common.ShowFreeTimeNextTenDays(listBookedAppointments, startBusiness, closeBusiness);
+                catch (Exception)
+                {
+                    showAvailableTime += "There is a fatal error in the file " + path+"/n";
+                }
+            }
+            showAvailableTime += _common.ShowFreeTimeNextTenDays(listBookedAppointments, startBusiness, closeBusiness);
             
             return showAvailableTime;
         }
@@ -90,7 +96,7 @@ namespace GarageBooker
             var messageBooked = "";
             var alreadyBooked = false;
 
-            var listBooked = Common.ListAppointmentBookedPerDay(filePath, maxNextDays);
+            var listBooked = _common.ListAppointmentBookedPerDay(filePath, maxNextDays);
             foreach (var appointment in listBooked)
             {
                 if (appointment.Name.ToLower() == newAppointment.Name.ToLower() && appointment.StartTime < newAppointment.StartTime && appointment.EndTime > newAppointment.StartTime)
